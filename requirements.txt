@@ -5,6 +5,7 @@ Flask==0.11.1
 Flask-Migrate==1.8.0
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.1
+gunicorn==19.6.0
 itsdangerous==0.24
 Jinja2==2.8
 Mako==1.0.4
@@ -13,6 +14,8 @@ nltk==3.2
 pkg-resources==0.0.0
 psycopg2==2.6.1
 python-editor==1.0.1
+redis==2.10.5
 requests==2.9.1
+rq==0.6.0
 SQLAlchemy==1.0.15
 Werkzeug==0.11.11

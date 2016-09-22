@@ -1,60 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="WordcountApp">
   <head>
     <title>Wordcount</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" media="screen">
+
     <style>
       .container {
         max-width: 1000px;
       }
     </style>
   </head>
-  <body>
+  <body ng-controller="WordcountController">
     <div class="container">
       <div class="row">
         <div class="col-sm-5 col-sm-offset-1">
           <h1>Wordcount</h1>
           <br>
-          <form role="form" method="POST" action="/">
+          <form role="form" ng-submit="getResults()">
             <div class="form-group">
-              <input type="text" name="url" class="form-control" id="url-box" placeholder="Enter URL..." style="max-width: 300px;">
+              <input type="text" name="url" class="form-control" id="url-box" placeholder="Enter URL..." style="max-width: 300px;" ng-model="url" required>
             </div>
-            <button type="submit" class="btn btn-default">Submit</button>
+            {% raw %}
+            <button type="submit" class="btn btn-primary" ng-disabled="loading">{{ submitButtonText }}</button>
+            {% endraw %}
           </form>
           <br>
-          {% for error in errors %}
-            <h4>{{ error }}</h4>
-          {% endfor %}
+          <div class="alert alert-danger" role="alert" ng-show='urlError'>
+            <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+            <span class="sr-only">Error:</span>
+            <span>There was an error submitting your URL.<br>
+            Please check to make sure it is valid before trying again.</span>
+          </div>
           <br>
         </div>
         <div class="col-sm-5 col-sm-offset-1">
-          {% if results %}
-            <h2>Frequencies</h2>
-            <br>
-            <div id="results">
-              <table class="table table-striped" style="max-width: 300px;">
-                <thead>
-                  <tr>
-                    <th>Word</th>
-                    <th>Count</th>
-                  </tr>
-                </thead>
-                {% for result in results%}
-                  <tr>
-                    <td>{{ result[0] }}</td>
-                    <td>{{ result[1] }}</td>
-                  </tr>
-                {% endfor %}
-              </table>
-            </div>
-          {% endif %}
+          <h2>Frequencies</h2>
+          <br>
+          <div id="results">           
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Word</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% raw %}
+                <tr ng-repeat="(key, val) in wordcounts">               
+                  <td>{{key}}</td>
+                  <td>{{val}}</td>                 
+                </tr>
+              {% endraw %}
+              </tbody>
+            </table>         
+          </div>
         </div>
+        <img class="col-sm-3 col-sm-offset-4" src="{{ url_for('static',
+  filename='spinner.gif') }}" ng-show="loading">
       </div>
     </div>
     <br><br>
     <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
   </body>
 </html>
 
