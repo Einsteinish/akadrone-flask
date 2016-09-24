@@ -1,3 +1,3 @@
 source /home/k/MySites/akadrone/venv/bin/activate
-python /home/k/MySites/akadrone/worker.py &
-exec gunicorn -w 4 -b 127.0.0.1:5000 aka:app
+/home/sfvue/MySites/akadrone/venv/bin/python /home/sfvue/MySites/akadrone/worker.py &
+/home/sfvue/MySites/akadrone/venv/bin/gunicorn -w 1 -b 127.0.0.1:5000 aka:app

@@ -22,10 +22,12 @@ app = Flask(__name__)
 app.config.from_object('config')
 app_settings = app.config['APP_SETTINGS']
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/wordcount_dev'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/wordcount_dev'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost/wordcount_dev'
 
 db = SQLAlchemy(app)
 
+# set up a Redis connection and initialized a queue
 q = Queue(connection=conn)
 
 from models import *
@@ -83,7 +85,10 @@ def get_counts():
     url = data["url"]
     if 'http://' not in url[:7]:
         url = 'http://' + url
+
     # start job
+    # adds a new job to the queue 
+    # and that job runs the count_and_save_words() function with the URL as the argument.
     job = q.enqueue_call(
         func=count_and_save_words, args=(url,), result_ttl=5000
     )
@@ -92,7 +97,6 @@ def get_counts():
 
 @app.route("/results/<job_key>", methods=['GET'])
 def get_results(job_key):
-
     job = Job.fetch(job_key, connection=conn)
 
     if job.is_finished:
